@@ -1,0 +1,19 @@
+div {
+	background-color: rgb(110, 110, 200);
+	padding: 20px;
+	border-radius: 8px;
+	margin-bottom: 15px;
+}
+
+#myOwnButton {
+	background-color: rgb(240, 77, 186);
+	color: white;
+	border: none;
+	border-radius: 8px;
+	padding: 10px 15px;
+	cursor: pointer;
+}
+
+#myOwnButton:hover {
+	background-color: rgb(243, 56, 181);
+}
