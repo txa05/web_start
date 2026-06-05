@@ -1,1 +1,35 @@
-</h1>olá mundo</h1>
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Minha Primeira Página - Tx</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div>
+        <button id="myOwnButton">experimento</button>
+        <p></p> <input type="text" placeholder="Go on! type something">
+    </div>
+    
+    <h1>Primeiro Cabeçalho</h1>
+    <p>Este é um parágrafo de texto.</p>
+    <button id="button">Clique aqui</button>
+
+    <script>
+        // 1. Declaração das referências (Ponteiros para os nós do DOM)
+        const button = document.getElementById("myOwnButton");
+        const myInput = document.querySelector("input");
+        const pgf = document.querySelector("p");
+
+        // 2. Definição da função de Callback
+        function handleClique(){
+            const typedText = myInput.value;
+	    if (typedText.length != 0)
+            	pgf.textContent = `Você digitou: ${typedText}`;
+        }
+
+        // 3. Registro do Evento (Fora da função, executado no carregamento)
+        button.addEventListener("click", handleClique);
+    </script>
+</body>
+</html>
