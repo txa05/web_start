@@ -12,24 +12,43 @@
     </div>
     
     <h1>Primeiro Cabeçalho</h1>
-    <p>Este é um parágrafo de texto.</p>
+    <p id="p1">Este é um parágrafo de texto.</p>
     <button id="button">Clique aqui</button>
 
     <script>
-        // 1. Declaração das referências (Ponteiros para os nós do DOM)
-        const button = document.getElementById("myOwnButton");
-        const myInput = document.querySelector("input");
-        const pgf = document.querySelector("p");
+	const  button = document.getElementById("myOwnButton");
+	const myInput = document.querySelector("input");
+	const  pgf = document.getElementById("p1");
 
-        // 2. Definição da função de Callback
-        function handleClique(){
-            const typedText = myInput.value;
-	    if (typedText.length != 0)
-            	pgf.textContent = `Você digitou: ${typedText}`;
-        }
+	function handleClick(){
+		const typedText = myInput.value;
 
-        // 3. Registro do Evento (Fora da função, executado no carregamento)
-        button.addEventListener("click", handleClique);
+		if (!typedText)
+			return ;
+		pgf.textContent = "Enviando para o servidor";
+
+		fetch("http://127.0.0.1:3000", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({ text: typedText })
+		})
+		
+		.then(resp => {
+			return resp.json();
+		})
+
+		.then(serverData => {
+			pgf.textContent = `${serverData.msg} Conteúdo: "${serverData.receivedContent}" (Tamanho: ${serverData.length} caracteres)`;
+
+		})
+		.catch(error => {
+			pgf.textContent = "Fail to connect with server.";
+			console.error("Requisition Error:", error);
+		});
+	}
+	button.addEventListener("click", handleClick);
     </script>
 </body>
 </html>
