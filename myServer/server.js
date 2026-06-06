@@ -5,17 +5,17 @@ const PORT = 3000
 
 const server = http.createServer((req, res) => {
 
-	res.setHeader('Acess-Control-Allow-Origin', '*');
-	res.setHeader('Acess-Control-Allow-Methods', 'POST, GET, OPTIONS');
-	res.setHeader('Acess-Control-Allow-Headers', 'Content-Type');
+	res.setHeader('Access-Control-Allow-Origin', '*');
+	res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
+	res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-	if (res.method === 'OPTIONS'){
+	if (req.method === 'OPTIONS'){
 		res.statusCode = 200;
 		res.end();
 		return ;
 	}
 
-	if (res.method === 'POST') {
+	if (req.method === 'POST') {
 		let body = '';
 
 		req.on('data', chunk => {
@@ -25,13 +25,13 @@ const server = http.createServer((req, res) => {
 		req.on('end', () => {
 			try{
 				const receivedData = JSON.parse(body);
-				const userText = receivedData.texto;
+				const userText = receivedData.text;
 
 				res.statusCode = 201;
-				res.setHeader('Content-Type', 'apllications/json');
+				res.setHeader('Content-Type', 'application/json');
 
 				const answJSON = {
-					msg: `reeived: ${userText}`,
+					msg: `dados processados com sucesso`,
 					receivedContent: userText,
 					length: userText.length
 				};
@@ -45,7 +45,9 @@ const server = http.createServer((req, res) => {
 		});
 	}
 	else {
-	
+		res.statusCode = 404;
+		res.setHeader('Content-Type', 'application/json');
+		res.end(JSON.stringify({ erro: "Rota não encontrada" }));
 	}
 });
 
