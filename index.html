@@ -35,15 +35,15 @@
 			body: JSON.stringify({ text: typedText })
 		})
 		
-		.then(resp => {
+		.then( function (resp) {
 			return resp.json();
 		})
 
-		.then(serverData => {
+		.then( function (serverData) {
 			pgf.textContent = `${serverData.msg}, Conteúdo: "${serverData.receivedContent}" (Tamanho: ${serverData.length} caracteres)`;
 
 		})
-		.catch(error => {
+		.catch(function (error) {
 			pgf.textContent = "Fail to connect with server.";
 			console.error("Requisition Error:", error);
 		});
