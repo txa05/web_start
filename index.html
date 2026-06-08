@@ -40,7 +40,7 @@
 		})
 
 		.then(serverData => {
-			pgf.textContent = `${serverData.msg} Conteúdo: "${serverData.receivedContent}" (Tamanho: ${serverData.length} caracteres)`;
+			pgf.textContent = `${serverData.msg}, Conteúdo: "${serverData.receivedContent}" (Tamanho: ${serverData.length} caracteres)`;
 
 		})
 		.catch(error => {
