@@ -1,4 +1,6 @@
 const http = require('http');
+const db = require('../database');
+const { json } = require('stream/consumers');
 
 const HOSTNAME = '127.0.0.1'
 const PORT = 3000
@@ -15,7 +17,7 @@ const server = http.createServer((req, res) => {
 		return ;
 	}
 
-	if (req.method === 'POST') {
+	if (req.method === 'POST' && req.url === "/registrar") {
 		let body = '';
 
 		req.on('data', chunk => {
@@ -25,23 +27,56 @@ const server = http.createServer((req, res) => {
 		req.on('end', () => {
 			try{
 				const receivedData = JSON.parse(body);
-				const userText = receivedData.text;
+				
+				const { nome, email, senha } = receivedData;
 
-				res.statusCode = 201;
-				res.setHeader('Content-Type', 'application/json');
+				if (!nome || !email || !senha)
+				{
+					res.statusCode = 400;
+					return res.end(JSON.stringify({ error: "todos os campos são obrigatórios." }));
+				}
 
-				const answJSON = {
-					msg: `dados processados com sucesso`,
-					receivedContent: userText,
-					length: userText.length
-				};
+				const sql = 'INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)';
 
-				res.end(JSON.stringify(answJSON));
+				db.run(sql, [nome, email, senha], function(err) {
+					if (err)
+					{
+						res.statusCode = 400;
+						return res.end(JSON.stringify({ error: "Email já cadastrado" }))
+					}
+
+					res.statusCode = 201;
+					res.setHeader('Content-Type', 'application/json');
+					res.end(JSON.stringify({
+						msg: "Usuário registrado com sucesso",
+						id: this.lastID
+					}));
+
+				})
 			}
 			catch (error){
 				res.statusCode = 400;
 				res.end(JSON.stringify({ error: "invalid JSON format" }));
 			};
+		});
+	}
+	else if (req.method === "GET" && req.url === "/usuarios"){
+		const sql = `SELECT nome FROM usuarios`;
+		
+		db.all(sql, [], function(err, rows){
+			if (err)
+			{
+				res.statusCode = 400;
+				return res.end(JSON.stringify({ error: "erro ao buscar no banco" }))
+			}
+
+			const primeirosNomes = rows.map(row => {
+				return row.nome.trim().split(' ')[0];
+			});
+			
+			res.statusCode = 200;
+			res.setHeader('Content-Type',  'application/json');
+			res.end(JSON.stringify(primeirosNomes));
 		});
 	}
 	else {
